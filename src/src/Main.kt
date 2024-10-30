@@ -1,7 +1,6 @@
 var accountBalance = (0..1000).random()
 
 fun main() {
-
     println("Welcome to your banking system.")
     println("What type of account would you like to create?")
     println("1. Debit account")
@@ -30,40 +29,42 @@ fun main() {
     val money = (0..1000).random()
     println("The amount you are attempting to transfer is $money dollars.")
 
+    // Withdraw operation
     var output = withdraw(money)
     println("The amount you withdrew is $output dollars.")
 
+    // Debit withdraw operation
     output = debitWithdraw(money)
     println("The amount you withdrew from the debit account is $output dollars.")
 
+    // Deposit operation
     output = deposit(money)
     println("The amount you deposited is $output dollars.")
 
+    // Credit deposit operation
     output = creditDeposit(money)
     println("The amount you deposited into the credit account is $output dollars.")
 }
 
 fun withdraw(amount: Int): Int {
-    if (accountBalance >= amount) {
-        accountBalance -= amount
-        println("Withdrew: $amount dollars.")
-        println("Updated balance: $accountBalance dollars.")
-        return amount
-    } else {
+    if (amount > accountBalance) {
         println("Not enough balance to withdraw $amount dollars.")
         return 0
     }
+    accountBalance -= amount
+    println("You successfully withdrew $amount dollars. The current balance is $accountBalance dollars.")
+    return amount
 }
 
 fun debitWithdraw(amount: Int): Int {
-    return if (accountBalance == 0) {
-        println("Can't withdraw, no money in this account!")
-        accountBalance
+    if (accountBalance == 0) {
+        println("Can't withdraw, no money on this account!")
+        return 0
     } else if (amount > accountBalance) {
-        println("Not enough money in this account! The balance is $accountBalance dollars.")
-        0
+        println("Not enough money on this account! The current balance is $accountBalance dollars.")
+        return 0
     } else {
-        withdraw(amount)
+        return withdraw(amount)
     }
 }
 
@@ -74,13 +75,17 @@ fun deposit(amount: Int): Int {
 }
 
 fun creditDeposit(amount: Int): Int {
-    return if (accountBalance == 0) {
-        println("You don't need to deposit anything; the balance is already zero.")
-        accountBalance
+    if (accountBalance == 0) {
+        println("This account is completely paid off! Do not deposit money!")
+        return accountBalance
     } else if (accountBalance + amount > 0) {
-        println("Deposit failed; you tried to pay off an amount greater than the credit balance. The balance is $accountBalance dollars.")
-        0
+        println("Deposit failed, you tried to pay off an amount greater than the credit balance. The current balance is $accountBalance dollars.")
+        return 0
+    } else if (amount == -accountBalance) {
+        accountBalance = 0
+        println("You have paid off this account!")
+        return amount
     } else {
-        deposit(amount)
+        return deposit(amount)
     }
 }
